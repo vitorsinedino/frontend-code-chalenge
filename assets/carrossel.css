@@ -1,0 +1,7 @@
+.carrossel{
+    overflow-x: hidden;
+}
+
+.carrossel ul{
+    flex-wrap: nowrap;
+}

@@ -7,6 +7,9 @@
     <meta name="theme-color" content="">
     <link rel="canonical" href="{{ canonical_url }}">
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="stylesheet" href="{{ 'slick.css' | asset_url }}">
+    <link rel="stylesheet" href="{{ 'slick-theme.css' | asset_url }}">
+
 
     {%- if settings.favicon != blank -%}
       <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
@@ -299,5 +302,20 @@
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+      <script src="{{ 'jquery.min.js' | asset_url }}"></script>
+      <script src="{{ 'slick.min.js' | asset_url }}"></script>
+      <script>
+        $(document).ready(function(){
+          setTimeout(function() {
+            $('.product-slider').slick({
+              dots: true,
+              infinite: true,
+              speed: 300,
+              slidesToShow: 1,
+              adaptiveHeight: true
+          });
+        }, 1000);
+      });
+    </script>
   </body>
 </html>

@@ -1,5 +1,7 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'merigoraundo.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="https://unpkg.com/slick-carousel@1.8.1/slick/slick.css">
 {{ 'section-related-products.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
@@ -25,25 +27,27 @@
       <h2 class="related-products__heading {{ section.settings.heading_size }}">
         {{ section.settings.heading }}
       </h2>
-      <ul
-        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
-        role="list"
-      >
-        {% for recommendation in recommendations.products %}
-          <li class="grid__item">
-            {% render 'card-product',
-              card_product: recommendation,
-              media_aspect_ratio: section.settings.image_ratio,
-              show_secondary_image: section.settings.show_secondary_image,
-              show_vendor: section.settings.show_vendor,
-              show_rating: section.settings.show_rating
-            %}
-          </li>
-        {% endfor %}
-      </ul>
+
+      <div class="carrossel" style="display: flex; flex-wrap: wrap;">
+          {% for recommendation in recommendations.products %}
+        <div class="grid__item" style="flex: 1 1 calc(100%/{{ section.settings.columns_desktop }}); box-sizing: border-box;">
+          {% render 'card-product',
+            card_product: recommendation,
+            media_aspect_ratio: section.settings.image_ratio,
+            show_secondary_image: section.settings.show_secondary_image,
+            show_vendor: section.settings.show_vendor,
+            show_rating: section.settings.show_rating
+          %}
+        </div>
+          {% endfor %}
+      </div>
+
     {% endif %}
   </product-recommendations>
 </div>
+
+<script src="{{ 'carrossel.js' | asset_url }}"></script>
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
 
 {% schema %}
 {

@@ -11,5 +11,5 @@ document.addEventListener("DOMContentLoaded", function() {
           wrapAround: true
         });
       }
-    }, 500); //Adicionei um delay pra garantir que o slider carregue, assim como nos foi orientado via email
+    }, 1000); //Adicionei um delay pra garantir que o slider carregue, assim como nos foi orientado via email
   });

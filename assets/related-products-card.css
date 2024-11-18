@@ -1,0 +1,40 @@
+.add-to-cart-button{
+    position: relative;
+    z-index: 10000;
+    width: 100%;
+    display: flex;
+    justify-self: center;
+    background-color: white;
+    justify-content: center;
+    border: 1px solid black;
+    padding: 2vh;
+    cursor: pointer;
+}
+
+.add-to-cart-button:hover{
+    background-color: black;
+    color: white;
+    transition: 0.5s ease;
+}
+
+.card-wrapper{
+    margin-right: 2vw;
+}
+
+@media screen and (max-width: 400px) {
+    .add-to-cart-button{
+        padding: 0.2vh;
+    }
+
+    .price{
+        font-size: 1.2rem;
+    }
+
+    .price--on-sale .price-item--regular {
+        font-size: 1.2rem;
+    }
+
+    .card__heading{
+        font-size: 1rem;
+    }
+}

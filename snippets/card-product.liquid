@@ -19,6 +19,7 @@
 {% endcomment %}
 
 {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+{{ 'related-products-card.css' | asset_url | stylesheet_tag }}
 
 {%- if card_product and card_product != empty -%}
   {%- liquid
@@ -114,6 +115,7 @@
               >
                 {{ card_product.title | escape }}
               </a>
+              
             </h3>
           </div>
           <div class="card__badge {{ settings.badge_position }}">
@@ -197,6 +199,17 @@
             {%- endif -%}
 
             {% render 'price', product: card_product, price_class: '' %}
+            <!-- Botão adicionar ao carrinho-->
+             {% comment %} <form id="add-to-cart-form" action="">
+              <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+              <button type="submit" class="add-to-cart-button">Add to Cart</button>
+            </form> {% endcomment %}
+            <button
+              class="add-to-cart-button"
+              data-product-id="{{ card_product.id }}"
+              data-variant-id="{{ card_product.selected_or_first_available_variant.id }}">
+              Add to Cart
+            </button>
           </div>
         </div>
         {%- if show_quick_add -%}
@@ -378,5 +391,6 @@
         </div>
       </div>
     </div>
+    <script src="{{ 'add-to-cart.js' | asset_url }}" defer="defer"></script>
   </div>
 {%- endif -%}

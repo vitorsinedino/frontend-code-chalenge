@@ -1,39 +1,44 @@
 const drawer = document.querySelector(".drawer.active");
+const cartDrawerContainer = document.getElementById("cart-itens-drawer");
 
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM completamente carregado.");
 
-  // Adiciona um listener ao container pai que contém os produtos relacionados
+  // Listener para todos os botões "Add to Cart"
   document.body.addEventListener("click", function (event) {
-    // Verifica se o clique foi em um botão de adicionar ao carrinho
     if (event.target.classList.contains("add-to-cart-button")) {
       event.preventDefault();
       event.stopPropagation();
 
       const button = event.target;
-      const productId = button.getAttribute("data-product-id");
       const variantId = button.getAttribute("data-variant-id");
 
-      console.log("Botão clicado. Produto ID:", productId, "Variant ID:", variantId);
+      console.log("Produto sendo adicionado ao carrinho. Variant ID:", variantId);
 
       if (!variantId) {
         console.error("Erro: Variant ID está ausente.");
         return;
       }
 
-      // Adiciona o produto ao carrinho
-      addToCart(variantId);
-      updateCart();
-      abrirDrawer();
+      // Adiciona o produto ao carrinho e atualiza o drawer
+      addToCart(variantId)
+        .then(() => {
+          removerClasseVaziaDoCarrinho(); //Remove a classe de carrinho vazio visto que será adicionado um item
+          updateCartDrawer();
+        })
+        .catch(error => {
+          console.error("Erro ao adicionar o produto ao carrinho:", error);
+        });
     }
   });
 });
 
+
 function addToCart(variantId) {
   console.log("Tentando adicionar ao carrinho. Variant ID:", variantId);
 
-  fetch("/cart/add.js", {
+  return fetch("/cart/add.js", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -47,23 +52,14 @@ function addToCart(variantId) {
         },
       ],
     }),
-  })
-    .then(response => {
-      console.log("Resposta da API:", response);
-      if (!response.ok) {
-        throw new Error(`Erro ao adicionar ao carrinho. Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log("Produto adicionado com sucesso:", data);
-      alert("Produto adicionado ao carrinho!");
-    })
-    .catch(error => {
-      console.error("Erro ao adicionar ao carrinho:", error.message);
-      alert("Ocorreu um erro ao adicionar o produto ao carrinho.");
-    });
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error(`Erro ao adicionar ao carrinho. Status: ${response.status}`);
+    }
+    return response.json();
+  });
 }
+
 
 //Função pra abrir o 'Cart Drawer'
 function abrirDrawer(){
@@ -72,26 +68,38 @@ function abrirDrawer(){
 }
   
 // Função para atualizar a exibição do carrinho
-function updateCart() {
-  fetch("/cart.js", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-    },
-  })
+function updateCartDrawer() {
+  // Faz uma requisição para obter o HTML atualizado do Cart Drawer
+  fetch('/?section_id=cart-drawer')
     .then(response => {
       if (!response.ok) {
-        throw new Error("Erro ao obter o carrinho");
+        throw new Error('Erro ao obter o Cart Drawer.');
       }
-      return response.json();
+      return response.text();
     })
-    .then(cart => {
-      renderCart(cart);
+    .then(html => {
+      // Parse do HTML retornado
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const updatedDrawerContent = doc.querySelector('#CartDrawer .drawer__inner');
+      const cartDrawerInner = document.querySelector('#CartDrawer .drawer__inner');
+
+      if (updatedDrawerContent && cartDrawerInner) {
+        // Substitui o conteúdo do Cart Drawer pelo conteúdo atualizado
+        cartDrawerInner.innerHTML = updatedDrawerContent.innerHTML;
+      }
+
+      // Abre o Cart Drawer (se necessário)
+      abrirDrawer();
     })
     .catch(error => {
-      console.error("Erro:", error);
+      console.error('Erro ao atualizar o Cart Drawer:', error);
     });
+}
+
+//Ao adicionar o primeiro item ao carrinho, por algum motivo ele ainda estava com a classe 'is-empty'. Por isso foi criada essa função, para garantir a correção desse comportamento
+function removerClasseVaziaDoCarrinho() {
+  cartDrawerContainer.classList.remove("is-empty");
 }
 
 
